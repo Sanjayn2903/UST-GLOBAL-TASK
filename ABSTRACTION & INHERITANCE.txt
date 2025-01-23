@@ -1,0 +1,267 @@
+ABSTRACTION
+
+1)
+abstract class Calculator {
+    abstract int calculate(int a, int b);
+}
+
+class Addition extends Calculator {
+    @Override
+    int calculate(int a, int b) {
+        return a + b;
+    }
+}
+
+class Subtraction extends Calculator {
+    @Override
+    int calculate(int a, int b) {
+        return a - b;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Calculator add = new Addition();
+        Calculator subtract = new Subtraction();
+        System.out.println("Addition: " + add.calculate(5, 3));
+        System.out.println("Subtraction: " + subtract.calculate(5, 3));
+    }
+}
+
+
+2)
+abstract class BankAccount {
+    protected String accountNumber;
+    protected double balance;
+
+    public BankAccount(String accountNumber, double balance) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+    }
+
+    abstract void deposit(double amount);
+
+    abstract void withdraw(double amount);
+
+    public void checkBalance() {
+        System.out.println("Account Number: " + accountNumber + ", Balance: " + balance);
+    }
+}
+
+class SavingsAccount extends BankAccount {
+
+    public SavingsAccount(String accountNumber, double balance) {
+        super(accountNumber, balance);
+    }
+
+    @Override
+    void deposit(double amount) {
+        balance += amount;
+        System.out.println("Deposited " + amount + " into Savings Account.");
+    }
+
+    @Override
+    void withdraw(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+            System.out.println("Withdrew " + amount + " from Savings Account.");
+        } else {
+            System.out.println("Insufficient balance.");
+        }
+    }
+}
+
+class CurrentAccount extends BankAccount {
+    private static final double OVERDRAFT_LIMIT = 5000;
+
+    public CurrentAccount(String accountNumber, double balance) {
+        super(accountNumber, balance);
+    }
+
+    @Override
+    void deposit(double amount) {
+        balance += amount;
+        System.out.println("Deposited " + amount + " into Current Account.");
+    }
+
+    @Override
+    void withdraw(double amount) {
+        if (amount <= balance + OVERDRAFT_LIMIT) {
+            balance -= amount;
+            System.out.println("Withdrew " + amount + " from Current Account.");
+        } else {
+            System.out.println("Exceeds overdraft limit.");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        BankAccount savings = new SavingsAccount("SA123", 1000);
+        BankAccount current = new CurrentAccount("CA456", 2000);
+
+        savings.deposit(500);
+        savings.withdraw(200);
+        savings.checkBalance();
+
+        current.deposit(1000);
+        current.withdraw(3500);
+        current.checkBalance();
+    }
+}
+
+
+3)
+abstract class Employee {
+    protected String name;
+    protected String employeeId;
+
+    public Employee(String name, String employeeId) {
+        this.name = name;
+        this.employeeId = employeeId;
+    }
+
+    abstract double calculateSalary();
+
+    public void showDetails() {
+        System.out.println("Employee ID: " + employeeId + ", Name: " + name);
+    }
+}
+
+class FullTimeEmployee extends Employee {
+    private double monthlySalary;
+
+    public FullTimeEmployee(String name, String employeeId, double monthlySalary) {
+        super(name, employeeId);
+        this.monthlySalary = monthlySalary;
+    }
+
+    @Override
+    double calculateSalary() {
+        return monthlySalary;
+    }
+}
+
+class PartTimeEmployee extends Employee {
+    private double hourlyRate;
+    private int hoursWorked;
+
+    public PartTimeEmployee(String name, String employeeId, double hourlyRate, int hoursWorked) {
+        super(name, employeeId);
+        this.hourlyRate = hourlyRate;
+        this.hoursWorked = hoursWorked;
+    }
+
+    @Override
+    double calculateSalary() {
+        return hourlyRate * hoursWorked;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Employee fullTime = new FullTimeEmployee("Alice", "FT123", 5000);
+        Employee partTime = new PartTimeEmployee("Bob", "PT456", 20, 80);
+
+        fullTime.showDetails();
+        System.out.println("Salary: " + fullTime.calculateSalary());
+
+        partTime.showDetails();
+        System.out.println("Salary: " + partTime.calculateSalary());
+    }
+}
+
+
+INHERITANCE
+
+1)
+class Animal {
+    void eat() {
+        System.out.println("This animal eats food.");
+    }
+}
+
+class Dog extends Animal {
+    void bark() {
+        System.out.println("The dog barks.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog myDog = new Dog();
+        myDog.eat();  // Inherited from Animal
+        myDog.bark(); // Method in Dog class
+    }
+}
+
+2)
+class Vehicle {
+    void start() {
+        System.out.println("Vehicle is starting.");
+    }
+}
+
+class Car extends Vehicle {
+    void drive() {
+        System.out.println("Car is driving.");
+    }
+}
+
+class ElectricCar extends Car {
+    void charge() {
+        System.out.println("Electric car is charging.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ElectricCar myCar = new ElectricCar();
+        myCar.start();   // Inherited from Vehicle
+        myCar.drive();   // Inherited from Car
+        myCar.charge();  // Method in ElectricCar class
+    }
+}
+
+
+3)
+class Shape {
+    void draw() {
+        System.out.println("Drawing a shape.");
+    }
+}
+
+class Circle extends Shape {
+    @Override
+    void draw() {
+        System.out.println("Drawing a circle.");
+    }
+
+    void calculateArea(double radius) {
+        System.out.println("Area of circle: " + (Math.PI * radius * radius));
+    }
+}
+
+class Rectangle extends Shape {
+    @Override
+    void draw() {
+        System.out.println("Drawing a rectangle.");
+    }
+
+    void calculateArea(double length, double width) {
+        System.out.println("Area of rectangle: " + (length * width));
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Shape myCircle = new Circle();
+        myCircle.draw();
+        ((Circle) myCircle).calculateArea(5);
+
+        Shape myRectangle = new Rectangle();
+        myRectangle.draw();
+        ((Rectangle) myRectangle).calculateArea(4, 6);
+    }
+}
+
